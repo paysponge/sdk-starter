@@ -51,6 +51,17 @@ The transfer example exits without sending funds unless `RUN_TRANSFER=true` is s
 
 ## Python
 
+With `uv`:
+
+```bash
+cd python
+uv sync
+uv run python examples/wallet.py
+uv run python examples/platform.py
+```
+
+Or with `pip`:
+
 ```bash
 cd python
 python -m venv .venv
@@ -61,6 +72,14 @@ python examples/platform.py
 ```
 
 Optional examples:
+
+```bash
+uv run python examples/transfer.py
+uv sync --extra claude
+uv run python examples/mcp_claude.py
+```
+
+With `pip`:
 
 ```bash
 python examples/transfer.py
