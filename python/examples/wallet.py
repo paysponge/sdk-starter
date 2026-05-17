@@ -1,9 +1,7 @@
+from _env import load_dotenv, require_env, sponge_base_url
 from paysponge import SpongeWallet
 
-from _env import load_dotenv, require_env, sponge_base_url
-
 load_dotenv()
-
 wallet = SpongeWallet.connect(
     api_key=require_env("SPONGE_API_KEY"),
     base_url=sponge_base_url(),
