@@ -10,7 +10,9 @@ Use `SpongeWallet` for one agent acting with its own wallet. Use `SpongePlatform
 cp .env.example .env
 ```
 
-Set `SPONGE_API_KEY` for wallet examples and `SPONGE_MASTER_KEY` for platform examples.
+Get an agent API key from https://wallet.paysponge.com, then set it as `SPONGE_API_KEY` in `.env`.
+
+Use a `sponge_live_...` key for wallet examples. Use `SPONGE_MASTER_KEY` only for platform examples that create and manage agents.
 
 ## TypeScript
 
