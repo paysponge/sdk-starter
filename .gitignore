@@ -1,0 +1,14 @@
+.DS_Store
+.env
+.venv/
+__pycache__/
+*.pyc
+*.egg-info/
+node_modules/
+dist/
+*.tsbuildinfo
+uv.lock
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+bun.lock

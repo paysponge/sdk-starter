@@ -1,0 +1,13 @@
+[project]
+name = "sponge-sdk-python-starter"
+version = "0.1.0"
+description = "Starter examples for the Sponge Python SDK"
+requires-python = ">=3.10"
+dependencies = [
+  "paysponge>=0.1.0",
+]
+
+[project.optional-dependencies]
+claude = [
+  "claude-agent-sdk>=0.1.0",
+]
