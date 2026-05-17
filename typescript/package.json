@@ -7,8 +7,7 @@
     "wallet": "tsx src/wallet.ts",
     "platform": "tsx src/platform.ts",
     "transfer": "tsx src/transfer.ts",
-    "agentphone:x402": "tsx src/agentphone-x402.ts",
-    "agentphone:mpp": "tsx src/agentphone-mpp.ts",
+    "perplexity": "tsx src/perplexity.ts",
     "mcp:claude": "tsx src/mcp-claude.ts",
     "typecheck": "tsc --noEmit"
   },

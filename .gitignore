@@ -12,3 +12,7 @@ package-lock.json
 yarn.lock
 pnpm-lock.yaml
 bun.lock
+
+# Temporarily local-only while AgentPhone upstream provisioning is unstable.
+python/examples/agentphone*.py
+typescript/src/agentphone*.ts
