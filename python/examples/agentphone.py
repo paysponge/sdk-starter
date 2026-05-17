@@ -5,9 +5,28 @@ PaidFetch = Callable[..., Any]
 
 
 def unwrap_paid_response(response: Any) -> Any:
-    if isinstance(response, dict) and response.get("ok") is True and "data" in response:
-        return response["data"]
+    if isinstance(response, dict) and "ok" in response:
+        if response.get("ok") is not True:
+            raise RuntimeError(f"Paid AgentPhone request failed: {response!r}")
+        if response.get("status", 200) >= 400:
+            raise RuntimeError(f"AgentPhone returned HTTP {response['status']}: {response.get('data')!r}")
+        if "data" in response:
+            return response["data"]
     return response
+
+
+def require_fields(label: str, value: Any, *fields: str) -> dict[str, Any]:
+    if not isinstance(value, dict):
+        raise RuntimeError(f"{label} returned non-object response: {value!r}")
+
+    missing = [field for field in fields if field not in value]
+    if missing:
+        raise RuntimeError(
+            f"{label} response missing {', '.join(missing)}. "
+            f"Full response: {value!r}"
+        )
+
+    return value
 
 
 def run_agentphone_example(
@@ -44,6 +63,8 @@ def run_agentphone_example(
         },
     )
 
+    agent = require_fields("Create agent", agent, "id", "name")
+
     print("AgentPhone agent")
     print({"id": agent["id"], "name": agent["name"]})
 
@@ -63,6 +84,7 @@ def run_agentphone_example(
                 "agentId": agent["id"],
             },
         )
+        number = require_fields("Create number", number, "id", "phoneNumber")
         number_id = number["id"]
         phone_number = number["phoneNumber"]
 

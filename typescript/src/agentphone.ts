@@ -33,13 +33,36 @@ function unwrapPaidResponse<T>(response: unknown): T {
   if (
     response &&
     typeof response === "object" &&
-    "ok" in response &&
-    (response as { ok?: unknown }).ok === true &&
-    "data" in response
+    "ok" in response
   ) {
+    const paidResponse = response as { ok?: unknown; status?: number; data?: unknown };
+    if (paidResponse.ok !== true) {
+      throw new Error(`Paid AgentPhone request failed: ${JSON.stringify(response)}`);
+    }
+    if ((paidResponse.status ?? 200) >= 400) {
+      throw new Error(`AgentPhone returned HTTP ${paidResponse.status}: ${JSON.stringify(paidResponse.data)}`);
+    }
+    if (!("data" in response)) return response as T;
     return (response as { data: T }).data;
   }
   return response as T;
+}
+
+function requireFields<T extends Record<string, unknown>>(
+  label: string,
+  value: unknown,
+  fields: string[],
+): T {
+  if (!value || typeof value !== "object") {
+    throw new Error(`${label} returned non-object response: ${JSON.stringify(value)}`);
+  }
+
+  const missing = fields.filter((field) => !(field in value));
+  if (missing.length > 0) {
+    throw new Error(`${label} response missing ${missing.join(", ")}. Full response: ${JSON.stringify(value)}`);
+  }
+
+  return value as T;
 }
 
 export async function runAgentPhoneExample(config: AgentPhoneConfig) {
@@ -61,7 +84,7 @@ export async function runAgentPhoneExample(config: AgentPhoneConfig) {
     return unwrapPaidResponse<T>(response);
   };
 
-  const agent = await request<AgentPhoneAgent>("/v1/agents", {
+  const agent = requireFields<AgentPhoneAgent>("Create agent", await request("/v1/agents", {
     method: "POST",
     body: {
       name: config.exampleName,
@@ -70,7 +93,7 @@ export async function runAgentPhoneExample(config: AgentPhoneConfig) {
       enableMessaging: true,
       systemPrompt: "You are a concise assistant reachable by phone and text.",
     },
-  });
+  }), ["id", "name"]);
 
   console.log("AgentPhone agent");
   console.log({ id: agent.id, name: agent.name });
@@ -84,13 +107,13 @@ export async function runAgentPhoneExample(config: AgentPhoneConfig) {
       return;
     }
 
-    const number = await request<AgentPhoneNumber>("/v1/numbers", {
+    const number = requireFields<AgentPhoneNumber>("Create number", await request("/v1/numbers", {
       method: "POST",
       body: {
         country: "US",
         agentId: agent.id,
       },
-    });
+    }), ["id", "phoneNumber"]);
     numberId = number.id;
     phoneNumber = number.phoneNumber;
   }
