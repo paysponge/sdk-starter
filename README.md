@@ -14,8 +14,6 @@ Get an agent API key from https://wallet.paysponge.com, then set it as `SPONGE_A
 
 Use a `sponge_live_...` key for wallet examples. Use `SPONGE_MASTER_KEY` only for platform examples that create and manage agents.
 
-For the AgentPhone examples, create an AgentPhone API key from https://agentphone.ai/settings and set it as `AGENTPHONE_API_KEY`.
-
 ## TypeScript
 
 ```bash
@@ -36,7 +34,7 @@ npm run mcp:claude
 
 The transfer example exits without sending funds unless you edit `typescript/src/transfer.ts` and set `SEND_TRANSFER=true`.
 
-The AgentPhone examples create or reuse an AgentPhone agent, reuse an existing number when available, and can send a text through x402 or MPP. They will not provision a number or send a text unless you edit `typescript/src/agentphone-x402.ts` or `typescript/src/agentphone-mpp.ts` and enable the constants at the top.
+The AgentPhone examples use x402 or MPP directly. They create an AgentPhone agent, attach `EXISTING_NUMBER_ID` or provision a number when `CREATE_NUMBER_IF_NONE=true`, and can send a text when `SEND_TEXT=true`. The catalog currently exposes paid create-agent, create-number, and attach-number routes; `POST /v1/messages` must be registered as a paid route before the text step can succeed through x402 or MPP.
 
 ## Python
 
@@ -82,7 +80,7 @@ python examples/mcp_claude.py
 
 The transfer example exits without sending funds unless you edit `python/examples/transfer.py` and set `SEND_TRANSFER=True`.
 
-The AgentPhone examples create or reuse an AgentPhone agent, reuse an existing number when available, and can send a text through x402 or MPP. They will not provision a number or send a text unless you edit `python/examples/agentphone_x402.py` or `python/examples/agentphone_mpp.py` and enable the constants at the top.
+The AgentPhone examples use x402 or MPP directly. They create an AgentPhone agent, attach `EXISTING_NUMBER_ID` or provision a number when `CREATE_NUMBER_IF_NONE=True`, and can send a text when `SEND_TEXT=True`. The catalog currently exposes paid create-agent, create-number, and attach-number routes; `POST /v1/messages` must be registered as a paid route before the text step can succeed through x402 or MPP.
 
 ## Docs
 

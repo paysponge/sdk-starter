@@ -1,6 +1,3 @@
-import type { SpongeWallet } from "@paysponge/sdk";
-import { requireEnv } from "./env.js";
-
 export type PaidFetchOptions = {
   url: string;
   method?: "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
@@ -14,6 +11,7 @@ export type AgentPhoneConfig = {
   baseUrl: string;
   fetchPaid: PaidFetch;
   exampleName: string;
+  existingNumberId: string | null;
   createNumberIfNone: boolean;
   sendText: boolean;
   toNumber: string;
@@ -23,23 +21,15 @@ export type AgentPhoneConfig = {
 type AgentPhoneAgent = {
   id: string;
   name: string;
-  numbers?: AgentPhoneNumber[] | null;
 };
 
 type AgentPhoneNumber = {
   id: string;
   phoneNumber: string;
   status: string;
-  agentId?: string | null;
-};
-
-type ListResponse<T> = {
-  data: T[];
 };
 
 export async function runAgentPhoneExample(config: AgentPhoneConfig) {
-  const agentPhoneApiKey = requireEnv("AGENTPHONE_API_KEY");
-
   const request = async <T>(
     path: string,
     options: {
@@ -51,63 +41,55 @@ export async function runAgentPhoneExample(config: AgentPhoneConfig) {
       url: `${config.baseUrl}${path}`,
       method: options.method ?? "GET",
       headers: {
-        Authorization: `Bearer ${agentPhoneApiKey}`,
         "Content-Type": "application/json",
       },
       body: options.body,
     }) as Promise<T>;
   };
 
-  const agents = await request<ListResponse<AgentPhoneAgent>>("/v1/agents");
-  let agent = agents.data.find((item) => item.name === config.exampleName);
-
-  if (!agent) {
-    agent = await request<AgentPhoneAgent>("/v1/agents", {
-      method: "POST",
-      body: {
-        name: config.exampleName,
-        description: "Created by the Sponge SDK starter AgentPhone example",
-        voiceMode: "hosted",
-        enableMessaging: true,
-        systemPrompt: "You are a concise assistant reachable by phone and text.",
-      },
-    });
-  }
+  const agent = await request<AgentPhoneAgent>("/v1/agents", {
+    method: "POST",
+    body: {
+      name: config.exampleName,
+      description: "Created by the Sponge SDK starter AgentPhone example",
+      voiceMode: "hosted",
+      enableMessaging: true,
+      systemPrompt: "You are a concise assistant reachable by phone and text.",
+    },
+  });
 
   console.log("AgentPhone agent");
   console.log({ id: agent.id, name: agent.name });
 
-  const numbers = await request<ListResponse<AgentPhoneNumber>>("/v1/numbers");
-  let number =
-    numbers.data.find((item) => item.agentId === agent.id && item.status !== "released") ??
-    numbers.data.find((item) => item.status !== "released");
+  let numberId = config.existingNumberId;
+  let phoneNumber: string | undefined;
 
-  if (!number) {
+  if (!numberId) {
     if (!config.createNumberIfNone) {
-      console.log("No reusable AgentPhone number found. Set CREATE_NUMBER_IF_NONE=true in this file to provision one.");
+      console.log("No existing number configured. Set EXISTING_NUMBER_ID or CREATE_NUMBER_IF_NONE=true in this file.");
       return;
     }
 
-    number = await request<AgentPhoneNumber>("/v1/numbers", {
+    const number = await request<AgentPhoneNumber>("/v1/numbers", {
       method: "POST",
       body: {
         country: "US",
         agentId: agent.id,
       },
     });
+    numberId = number.id;
+    phoneNumber = number.phoneNumber;
   }
 
-  if (number.agentId !== agent.id) {
-    await request(`/v1/agents/${agent.id}/numbers`, {
-      method: "POST",
-      body: {
-        numberId: number.id,
-      },
-    });
-  }
+  await request(`/v1/agents/${agent.id}/numbers`, {
+    method: "POST",
+    body: {
+      numberId,
+    },
+  });
 
   console.log("AgentPhone number");
-  console.log({ id: number.id, phoneNumber: number.phoneNumber });
+  console.log({ id: numberId, phoneNumber });
 
   if (!config.sendText) {
     console.log("Text sending is disabled. Set SEND_TEXT=true in this file after reviewing TO_NUMBER and MESSAGE_BODY.");
@@ -118,7 +100,7 @@ export async function runAgentPhoneExample(config: AgentPhoneConfig) {
     method: "POST",
     body: {
       agent_id: agent.id,
-      number_id: number.id,
+      number_id: numberId,
       to_number: config.toNumber,
       body: config.messageBody,
     },
