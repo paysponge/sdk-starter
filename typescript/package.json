@@ -7,6 +7,8 @@
     "wallet": "tsx src/wallet.ts",
     "platform": "tsx src/platform.ts",
     "transfer": "tsx src/transfer.ts",
+    "hyperliquid": "tsx src/hyperliquid.ts",
+    "polymarket": "tsx src/polymarket.ts",
     "perplexity": "tsx src/perplexity.ts",
     "mcp:claude": "tsx src/mcp-claude.ts",
     "typecheck": "tsc --noEmit"

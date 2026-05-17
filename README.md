@@ -27,11 +27,17 @@ Optional examples:
 
 ```bash
 npm run transfer
+npm run hyperliquid
+npm run polymarket
 npm run perplexity
 npm run mcp:claude
 ```
 
 The transfer example exits without sending funds unless you edit `typescript/src/transfer.ts` and set `SEND_TRANSFER=true`.
+
+The Hyperliquid example only reads account status, markets, positions, and open orders.
+
+The Polymarket example only reads account status, markets, positions, and open orders.
 
 The Perplexity example uses `x402_fetch` against the Sponge catalog Perplexity service.
 
@@ -61,6 +67,8 @@ Optional examples:
 
 ```bash
 uv run python examples/transfer.py
+uv run python examples/hyperliquid.py
+uv run python examples/polymarket.py
 uv run python examples/perplexity.py
 uv sync --extra claude
 uv run python examples/mcp_claude.py
@@ -70,12 +78,18 @@ With `pip`:
 
 ```bash
 python examples/transfer.py
+python examples/hyperliquid.py
+python examples/polymarket.py
 python examples/perplexity.py
 pip install -e ".[claude]"
 python examples/mcp_claude.py
 ```
 
 The transfer example exits without sending funds unless you edit `python/examples/transfer.py` and set `SEND_TRANSFER=True`.
+
+The Hyperliquid example only reads account status, markets, positions, and open orders.
+
+The Polymarket example only reads account status, markets, positions, and open orders.
 
 The Perplexity example uses `x402_fetch` against the Sponge catalog Perplexity service.
 
