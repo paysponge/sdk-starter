@@ -1,26 +1,27 @@
-from paysponge import SpongeWallet
-
 from _env import load_dotenv, require_env, sponge_base_url
 from agentphone import run_agentphone_example
+from paysponge import SpongeWallet
 
 load_dotenv()
 
 CREATE_NUMBER_IF_NONE = False
 EXISTING_NUMBER_ID = None
 SEND_TEXT = False
-TO_NUMBER = "+14155551234"
+TO_NUMBER = "+16505378887"
 MESSAGE_BODY = "Hello from the Sponge SDK starter via AgentPhone x402."
 
 wallet = SpongeWallet.connect(
     api_key=require_env("SPONGE_API_KEY"),
     base_url=sponge_base_url(),
 )
+agent_id = wallet.get_agent().id
 
 
 def x402_fetch(**kwargs):
     return wallet.x402_fetch(
         **kwargs,
         preferred_chain="base",
+        agent_id=agent_id,
     )
 
 

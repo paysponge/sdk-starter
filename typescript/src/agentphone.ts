@@ -29,6 +29,19 @@ type AgentPhoneNumber = {
   status: string;
 };
 
+function unwrapPaidResponse<T>(response: unknown): T {
+  if (
+    response &&
+    typeof response === "object" &&
+    "ok" in response &&
+    (response as { ok?: unknown }).ok === true &&
+    "data" in response
+  ) {
+    return (response as { data: T }).data;
+  }
+  return response as T;
+}
+
 export async function runAgentPhoneExample(config: AgentPhoneConfig) {
   const request = async <T>(
     path: string,
@@ -37,14 +50,15 @@ export async function runAgentPhoneExample(config: AgentPhoneConfig) {
       body?: unknown;
     } = {},
   ): Promise<T> => {
-    return config.fetchPaid({
+    const response = await config.fetchPaid({
       url: `${config.baseUrl}${path}`,
       method: options.method ?? "GET",
       headers: {
         "Content-Type": "application/json",
       },
       body: options.body,
-    }) as Promise<T>;
+    });
+    return unwrapPaidResponse<T>(response);
   };
 
   const agent = await request<AgentPhoneAgent>("/v1/agents", {

@@ -15,13 +15,11 @@ wallet = SpongeWallet.connect(
     api_key=require_env("SPONGE_API_KEY"),
     base_url=sponge_base_url(),
 )
+agent_id = wallet.get_agent().id
 
 
 def mpp_fetch(**kwargs):
-    return wallet.mpp_fetch(
-        **kwargs,
-        chain="tempo",
-    )
+    return wallet.mpp_fetch(**kwargs, agent_id=agent_id)
 
 
 run_agentphone_example(

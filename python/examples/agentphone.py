@@ -4,6 +4,12 @@ from typing import Any
 PaidFetch = Callable[..., Any]
 
 
+def unwrap_paid_response(response: Any) -> Any:
+    if isinstance(response, dict) and response.get("ok") is True and "data" in response:
+        return response["data"]
+    return response
+
+
 def run_agentphone_example(
     *,
     base_url: str,
@@ -16,7 +22,7 @@ def run_agentphone_example(
     message_body: str,
 ) -> None:
     def request(path: str, *, method: str = "GET", body: dict[str, Any] | None = None):
-        return paid_fetch(
+        response = paid_fetch(
             url=f"{base_url}{path}",
             method=method,
             headers={
@@ -24,6 +30,7 @@ def run_agentphone_example(
             },
             body=body,
         )
+        return unwrap_paid_response(response)
 
     agent = request(
         "/v1/agents",

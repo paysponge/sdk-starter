@@ -15,11 +15,7 @@ const wallet = await SpongeWallet.connect({
 
 await runAgentPhoneExample({
   baseUrl: "https://api.agentphone.ai/mpp",
-  fetchPaid: (options: PaidFetchOptions) =>
-    wallet.mppFetch({
-      ...options,
-      chain: "tempo",
-  }),
+  fetchPaid: (options: PaidFetchOptions) => wallet.mppFetch(options),
   exampleName: "sponge-sdk-starter-mpp",
   existingNumberId: EXISTING_NUMBER_ID,
   createNumberIfNone: CREATE_NUMBER_IF_NONE,
