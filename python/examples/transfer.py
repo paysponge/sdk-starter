@@ -1,13 +1,22 @@
-import os
-
 from paysponge import SpongeWallet
 
 from _env import load_dotenv, require_env, sponge_base_url
 
 load_dotenv()
 
-if os.environ.get("RUN_TRANSFER") != "true":
-    print("Transfer is disabled. Set RUN_TRANSFER=true after reviewing the recipient and amount.")
+SEND_TRANSFER = False
+TRANSFER = {
+    "chain": "base",
+    "to": "0x0000000000000000000000000000000000000000",
+    "amount": "1",
+    "currency": "USDC",
+}
+
+if not SEND_TRANSFER:
+    print(
+        "Transfer is disabled. Edit examples/transfer.py and set "
+        "SEND_TRANSFER=True after reviewing the recipient and amount."
+    )
     raise SystemExit(0)
 
 wallet = SpongeWallet.connect(
@@ -16,10 +25,10 @@ wallet = SpongeWallet.connect(
 )
 
 tx = wallet.transfer(
-    chain=os.environ.get("TRANSFER_CHAIN", "base"),
-    to=require_env("TRANSFER_TO"),
-    amount=os.environ.get("TRANSFER_AMOUNT", "1"),
-    currency=os.environ.get("TRANSFER_CURRENCY", "USDC"),
+    chain=TRANSFER["chain"],
+    to=TRANSFER["to"],
+    amount=TRANSFER["amount"],
+    currency=TRANSFER["currency"],
 )
 
 print("Transfer submitted")

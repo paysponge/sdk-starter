@@ -1,27 +1,8 @@
-# Sponge SDK Starter Pack
+# Sponge SDK Starter
 
-Runnable examples for the Sponge TypeScript and Python SDKs.
+Starter examples for the Sponge TypeScript and Python SDKs.
 
-Use `SpongeWallet` when one agent is acting with its own wallet. Use `SpongePlatform` when your backend creates and manages many agents.
-
-## Layout
-
-```text
-sponge-sdk-starter-pack/
-  .env.example
-  typescript/
-    src/
-      wallet.ts
-      platform.ts
-      transfer.ts
-      mcp-claude.ts
-  python/
-    examples/
-      wallet.py
-      platform.py
-      transfer.py
-      mcp_claude.py
-```
+Use `SpongeWallet` for one agent acting with its own wallet. Use `SpongePlatform` for backend code that creates and manages agents.
 
 ## Setup
 
@@ -47,7 +28,7 @@ npm run transfer
 npm run mcp:claude
 ```
 
-The transfer example exits without sending funds unless `RUN_TRANSFER=true` is set.
+The transfer example exits without sending funds unless you edit `typescript/src/transfer.ts` and set `SEND_TRANSFER=true`.
 
 ## Python
 
@@ -87,17 +68,12 @@ pip install -e ".[claude]"
 python examples/mcp_claude.py
 ```
 
-The transfer example exits without sending funds unless `RUN_TRANSFER=true` is set.
+The transfer example exits without sending funds unless you edit `python/examples/transfer.py` and set `SEND_TRANSFER=True`.
 
-## Environment Variables
+## Docs
 
-| Name | Used by | Description |
-| --- | --- | --- |
-| `SPONGE_API_KEY` | Wallet examples | Agent-scoped Sponge key, such as `sponge_test_...` or `sponge_live_...` |
-| `SPONGE_MASTER_KEY` | Platform examples | Master key for creating and managing agents |
-| `SPONGE_API_URL` | All examples | Optional custom API base URL |
-| `RUN_TRANSFER` | Transfer examples | Must be `true` before examples send funds |
-| `TRANSFER_CHAIN` | Transfer examples | Defaults to `base` |
-| `TRANSFER_TO` | Transfer examples | Recipient address |
-| `TRANSFER_AMOUNT` | Transfer examples | Defaults to `1` |
-| `TRANSFER_CURRENCY` | Transfer examples | Defaults to `USDC` |
+- SDK overview: https://docs.paysponge.com/wallet/sdk
+- Wallet SDK: https://docs.paysponge.com/wallet/sdk-wallet
+- Platform SDK: https://docs.paysponge.com/wallet/sdk-platform
+- TypeScript examples: https://docs.paysponge.com/wallet/typescript-examples
+- Python examples: https://docs.paysponge.com/wallet/python-examples
